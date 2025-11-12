@@ -14,6 +14,9 @@
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600,700&display=swap" rel="stylesheet">
 
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -412,25 +415,25 @@
     <div class="dashboard-container">
         <div class="header">
             <div class="header-title">
-                <h1>📊 Dashboard Social Media</h1>
+                <h1><i class="fas fa-chart-line"></i> Dashboard Social Media</h1>
                 <p id="clientName">Carica i dati per iniziare</p>
             </div>
             <div class="file-upload-container">
                 <div class="file-input-wrapper">
                     <button class="btn-videeco" onclick="document.getElementById('csvFile').click()">
-                        📁 Carica CSV
+                        <i class="fas fa-upload"></i> Carica CSV
                     </button>
                     <input type="file" id="csvFile" accept=".csv" onchange="loadCSV(event)">
                 </div>
                 <button class="btn-videeco btn-secondary" onclick="loadSampleData()">
-                    📊 Carica Dati di Esempio
+                    <i class="fas fa-database"></i> Carica Dati di Esempio
                 </button>
             </div>
         </div>
 
         <div class="content" id="mainContent">
             <div class="no-data">
-                <div class="no-data-icon">📂</div>
+                <div class="no-data-icon"><i class="fas fa-folder-open"></i></div>
                 <h2>Nessun dato caricato</h2>
                 <p style="margin-top: 10px;">Carica un file CSV o usa i dati di esempio per visualizzare la dashboard</p>
 
@@ -550,7 +553,7 @@ Cliente Demo,2025-10-14,2025-11-10,Pagina Facebook,121,4929,1684,40,11,12,@insta
 
                 <div class="section">
                     <div class="section-header">
-                        <div class="section-icon">📈</div>
+                        <div class="section-icon"><i class="fas fa-chart-line"></i></div>
                         <h2 class="section-title">Confronto Piattaforme</h2>
                     </div>
                     <div class="comparison-cards">
@@ -632,7 +635,7 @@ Cliente Demo,2025-10-14,2025-11-10,Pagina Facebook,121,4929,1684,40,11,12,@insta
 
                 <div class="section">
                     <div class="section-header">
-                        <div class="section-icon">📊</div>
+                        <div class="section-icon"><i class="fas fa-chart-bar"></i></div>
                         <h2 class="section-title">Andamento Follower</h2>
                     </div>
                     <div class="chart-container">
@@ -642,7 +645,7 @@ Cliente Demo,2025-10-14,2025-11-10,Pagina Facebook,121,4929,1684,40,11,12,@insta
 
                 <div class="section">
                     <div class="section-header">
-                        <div class="section-icon">👁️</div>
+                        <div class="section-icon"><i class="fas fa-eye"></i></div>
                         <h2 class="section-title">Visualizzazioni per Piattaforma</h2>
                     </div>
                     <div class="chart-container">
@@ -652,7 +655,7 @@ Cliente Demo,2025-10-14,2025-11-10,Pagina Facebook,121,4929,1684,40,11,12,@insta
 
                 <div class="section">
                     <div class="section-header">
-                        <div class="section-icon">💬</div>
+                        <div class="section-icon"><i class="fas fa-comments"></i></div>
                         <h2 class="section-title">Engagement (Interazioni)</h2>
                     </div>
                     <div class="chart-container">
@@ -662,7 +665,7 @@ Cliente Demo,2025-10-14,2025-11-10,Pagina Facebook,121,4929,1684,40,11,12,@insta
 
                 <div class="section">
                     <div class="section-header">
-                        <div class="section-icon">📝</div>
+                        <div class="section-icon"><i class="fas fa-history"></i></div>
                         <h2 class="section-title">Storico Periodi</h2>
                     </div>
                     <div class="table-container">
@@ -711,8 +714,8 @@ Cliente Demo,2025-10-14,2025-11-10,Pagina Facebook,121,4929,1684,40,11,12,@insta
         }
 
         function getGrowthText(growth) {
-            if (growth > 0) return `+${growth} ⬆️`;
-            if (growth < 0) return `${growth} ⬇️`;
+            if (growth > 0) return `+${growth} <i class="fas fa-arrow-up"></i>`;
+            if (growth < 0) return `${growth} <i class="fas fa-arrow-down"></i>`;
             return 'Nessuna variazione';
         }
 
