@@ -958,16 +958,16 @@
 
         async function loadDefaultCSV() {
             try {
-                const response = await fetch('./social-vigliano-2025.csv');
+                const response = await fetch('./data.csv');
                 if (response.ok) {
                     const text = await response.text();
                     parseCSV(text);
-                    console.log('✅ File social-vigliano-2025.csv caricato automaticamente');
+                    console.log('✅ File data.csv caricato automaticamente');
                 } else {
-                    console.log('ℹ️ File social-vigliano-2025.csv non trovato. Usa il bottone per caricare i dati.');
+                    console.log('ℹ️ File data.csv non trovato. Usa il bottone per caricare i dati.');
                 }
             } catch (error) {
-                console.log('ℹ️ File social-vigliano-2025.csv non trovato nella stessa cartella. Usa il bottone per caricare i dati.');
+                console.log('ℹ️ File data.csv non trovato nella stessa cartella. Usa il bottone per caricare i dati.');
             }
         }
     </script>
