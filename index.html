@@ -1,0 +1,975 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Social Media - Comune di Vigliano Biellese | Videeco Design</title>
+
+    <!-- Favicon Videeco -->
+    <link rel="icon" type="image/jpeg" href="https://videeco.com/wp-content/uploads/2021/05/cropped-logo-negativo-192x192.jpg" sizes="192x192">
+    <link rel="shortcut icon" href="https://videeco.com/wp-content/uploads/2021/05/cropped-logo-negativo-192x192.jpg">
+    <link rel="apple-touch-icon" href="https://videeco.com/wp-content/uploads/2021/05/cropped-logo-negativo-192x192.jpg" sizes="192x192">
+    <meta name="theme-color" content="#e10d19">
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600,700&display=swap" rel="stylesheet">
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        :root {
+            --videeco-font-primary: "Open Sans", sans-serif;
+            --videeco-color-bg: #FFFFFF;
+            --videeco-color-text: #4B4F58;
+            --videeco-color-heading: #3A3A3A;
+            --videeco-color-accent: #e10d19;
+            --videeco-color-border: #f0f0f0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--videeco-font-primary);
+            background-color: #fafafa;
+            color: var(--videeco-color-text);
+            line-height: 1.65;
+            padding: 20px;
+        }
+
+        .dashboard-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: var(--videeco-color-bg);
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            overflow: hidden;
+        }
+
+        .header {
+            background: var(--videeco-color-heading);
+            color: white;
+            padding: 30px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .header-title {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .header h1 {
+            font-size: 32px;
+            font-weight: 400;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            font-size: 15px;
+            opacity: 0.9;
+        }
+
+        .file-upload-container {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-videeco {
+            font-family: var(--videeco-font-primary);
+            font-size: 14px;
+            font-weight: 400;
+            text-transform: uppercase;
+            padding: 12px 24px;
+            background-color: var(--videeco-color-accent);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-videeco:hover {
+            background-color: #c20a16;
+            transform: translateY(-1px);
+        }
+
+        .btn-videeco:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background-color: #5D5D5D;
+        }
+
+        .btn-secondary:hover {
+            background-color: #3A3A3A;
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+        }
+
+        .file-input-wrapper input[type=file] {
+            position: absolute;
+            left: -9999px;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .period-info {
+            background: linear-gradient(135deg, var(--videeco-color-accent), #c20a16);
+            color: white;
+            padding: 24px 30px;
+            border-radius: 6px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .period-info h2 {
+            font-size: 24px;
+            font-weight: 400;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: var(--videeco-color-bg);
+            border: 1px solid var(--videeco-color-border);
+            border-left: 4px solid var(--videeco-color-accent);
+            border-radius: 6px;
+            padding: 24px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(225, 13, 25, 0.1);
+        }
+
+        .stat-label {
+            font-size: 13px;
+            text-transform: uppercase;
+            color: #999;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .stat-value {
+            font-size: 36px;
+            font-weight: 600;
+            color: var(--videeco-color-heading);
+            margin-bottom: 4px;
+        }
+
+        .stat-sublabel {
+            font-size: 14px;
+            color: var(--videeco-color-text);
+        }
+
+        .stat-growth-positive {
+            color: #25D366;
+        }
+
+        .stat-growth-negative {
+            color: #e10d19;
+        }
+
+        .section {
+            margin-bottom: 50px;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid var(--videeco-color-accent);
+        }
+
+        .section-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--videeco-color-accent);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: white;
+        }
+
+        .section-title {
+            font-size: 24px;
+            font-weight: 400;
+            color: var(--videeco-color-heading);
+        }
+
+        .chart-container {
+            background: var(--videeco-color-bg);
+            border: 1px solid var(--videeco-color-border);
+            border-radius: 6px;
+            padding: 24px;
+            margin-bottom: 24px;
+            height: 400px;
+            position: relative;
+        }
+
+        .table-container {
+            background: var(--videeco-color-bg);
+            border: 1px solid var(--videeco-color-border);
+            border-radius: 6px;
+            overflow-x: auto;
+            margin-bottom: 24px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 800px;
+        }
+
+        th {
+            background: var(--videeco-color-heading);
+            color: white;
+            padding: 16px;
+            text-align: left;
+            font-size: 13px;
+            text-transform: uppercase;
+            font-weight: 400;
+            letter-spacing: 0.5px;
+        }
+
+        td {
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--videeco-color-border);
+            font-size: 14px;
+        }
+
+        tbody tr:hover {
+            background: #f9f9f9;
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .platform-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .badge-facebook {
+            background: #1877f2;
+            color: white;
+        }
+
+        .badge-instagram {
+            background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+            color: white;
+        }
+
+        .badge-whatsapp {
+            background: #25D366;
+            color: white;
+        }
+
+        .no-data {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+        }
+
+        .no-data-icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+            opacity: 0.3;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 30px;
+            background: #f5f5f5;
+            color: #999;
+            font-size: 13px;
+        }
+
+        .comparison-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 24px;
+            margin-bottom: 30px;
+        }
+
+        .comparison-card {
+            background: var(--videeco-color-bg);
+            border: 1px solid var(--videeco-color-border);
+            border-radius: 6px;
+            padding: 24px;
+        }
+
+        .comparison-card h3 {
+            font-size: 18px;
+            font-weight: 400;
+            color: var(--videeco-color-heading);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .csv-example {
+            background: #f5f5f5;
+            border: 1px solid var(--videeco-color-border);
+            border-radius: 4px;
+            padding: 15px;
+            margin-top: 20px;
+            font-family: monospace;
+            font-size: 12px;
+            overflow-x: auto;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .content {
+                padding: 20px;
+            }
+
+            .header {
+                padding: 20px;
+            }
+
+            .header h1 {
+                font-size: 24px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .chart-container {
+                height: 300px;
+                padding: 15px;
+            }
+
+            .comparison-cards {
+                grid-template-columns: 1fr;
+            }
+
+            table {
+                font-size: 12px;
+            }
+
+            th, td {
+                padding: 10px 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <div class="header">
+            <div class="header-title">
+                <h1>📊 Dashboard Social Media</h1>
+                <p>Comune di Vigliano Biellese</p>
+            </div>
+            <div class="file-upload-container">
+                <div class="file-input-wrapper">
+                    <button class="btn-videeco" onclick="document.getElementById('csvFile').click()">
+                        📁 Carica CSV
+                    </button>
+                    <input type="file" id="csvFile" accept=".csv" onchange="loadCSV(event)">
+                </div>
+                <button class="btn-videeco btn-secondary" onclick="loadSampleData()">
+                    📊 Carica Dati di Esempio
+                </button>
+            </div>
+        </div>
+
+        <div class="content" id="mainContent">
+            <div class="no-data">
+                <div class="no-data-icon">📂</div>
+                <h2>Nessun dato caricato</h2>
+                <p style="margin-top: 10px;">Carica un file CSV o usa i dati di esempio per visualizzare la dashboard</p>
+
+                <div class="csv-example">
+                    <strong>Formato CSV richiesto:</strong><br><br>
+                    periodo_inizio,periodo_fine,fb_follower,fb_visualizzazioni,fb_copertura,fb_interazioni,fb_post,fb_storie,ig_follower,ig_visualizzazioni,ig_copertura,ig_interazioni,ig_post,ig_storie,wa_follower<br>
+                    2025-10-14,2025-11-10,121,4929,1684,40,11,12,364,6277,687,36,5,14,64
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            Dashboard realizzata da <strong>Videeco Design</strong> | Vicolo Borello 10, Vigliano Biellese
+        </div>
+    </div>
+
+    <script>
+        let chartInstances = {};
+        let allData = [];
+
+        // Funzione per caricare dati di esempio
+        function loadSampleData() {
+            const sampleCSV = `periodo_inizio,periodo_fine,fb_follower,fb_visualizzazioni,fb_copertura,fb_interazioni,fb_post,fb_storie,ig_follower,ig_visualizzazioni,ig_copertura,ig_interazioni,ig_post,ig_storie,wa_follower
+2025-09-14,2025-10-13,115,4200,1500,35,10,10,350,5800,650,32,4,12,60
+2025-10-14,2025-11-10,121,4929,1684,40,11,12,364,6277,687,36,5,14,64`;
+            parseCSV(sampleCSV);
+        }
+
+        function loadCSV(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const text = e.target.result;
+                parseCSV(text);
+            };
+            reader.readAsText(file);
+        }
+
+        function parseCSV(text) {
+            const lines = text.trim().split('\n');
+            const headers = lines[0].split(',').map(h => h.trim());
+
+            allData = [];
+            for (let i = 1; i < lines.length; i++) {
+                const values = lines[i].split(',').map(v => v.trim());
+                const row = {};
+                headers.forEach((header, index) => {
+                    row[header] = values[index];
+                });
+                allData.push(row);
+            }
+
+            if (allData.length > 0) {
+                renderDashboard(allData[allData.length - 1]); // Mostra l'ultimo periodo
+            }
+        }
+
+        function renderDashboard(data) {
+            const content = document.getElementById('mainContent');
+
+            const html = `
+                <div class="period-info">
+                    <h2>Periodo: ${formatDate(data.periodo_inizio)} - ${formatDate(data.periodo_fine)}</h2>
+                    <div style="text-align: right;">
+                        <div style="font-size: 14px; opacity: 0.9;">Popolazione target (15-29 anni)</div>
+                        <div style="font-size: 28px; font-weight: 600;">918 / 7.591</div>
+                    </div>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-label">Facebook Follower</div>
+                        <div class="stat-value">${data.fb_follower}</div>
+                        <div class="stat-sublabel ${getGrowthClass(calculateGrowth(data, 'fb_follower'))}">
+                            ${getGrowthText(calculateGrowth(data, 'fb_follower'))} dal periodo precedente
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Instagram Follower</div>
+                        <div class="stat-value">${data.ig_follower}</div>
+                        <div class="stat-sublabel ${getGrowthClass(calculateGrowth(data, 'ig_follower'))}">
+                            ${getGrowthText(calculateGrowth(data, 'ig_follower'))} dal periodo precedente
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">WhatsApp Follower</div>
+                        <div class="stat-value">${data.wa_follower}</div>
+                        <div class="stat-sublabel ${getGrowthClass(calculateGrowth(data, 'wa_follower'))}">
+                            ${getGrowthText(calculateGrowth(data, 'wa_follower'))} dal periodo precedente
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Tot. Visualizzazioni</div>
+                        <div class="stat-value">${(parseInt(data.fb_visualizzazioni) + parseInt(data.ig_visualizzazioni)).toLocaleString('it-IT')}</div>
+                        <div class="stat-sublabel">Facebook + Instagram</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Tot. Copertura</div>
+                        <div class="stat-value">${(parseInt(data.fb_copertura) + parseInt(data.ig_copertura)).toLocaleString('it-IT')}</div>
+                        <div class="stat-sublabel">Facebook + Instagram</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Tot. Interazioni</div>
+                        <div class="stat-value">${parseInt(data.fb_interazioni) + parseInt(data.ig_interazioni)}</div>
+                        <div class="stat-sublabel">Facebook + Instagram</div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="section-header">
+                        <div class="section-icon">📈</div>
+                        <h2 class="section-title">Confronto Piattaforme</h2>
+                    </div>
+                    <div class="comparison-cards">
+                        <div class="comparison-card">
+                            <h3><span class="platform-badge badge-facebook">Facebook</span></h3>
+                            <div style="margin: 15px 0;">
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                                    <span>Visualizzazioni:</span>
+                                    <strong>${parseInt(data.fb_visualizzazioni).toLocaleString('it-IT')}</strong>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                                    <span>Copertura:</span>
+                                    <strong>${parseInt(data.fb_copertura).toLocaleString('it-IT')}</strong>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                                    <span>Interazioni:</span>
+                                    <strong>${data.fb_interazioni}</strong>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                                    <span>Post pubblicati:</span>
+                                    <strong>${data.fb_post}</strong>
+                                </div>
+                                <div style="display: flex; justify-content: space-between;">
+                                    <span>Storie pubblicate:</span>
+                                    <strong>${data.fb_storie}</strong>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="comparison-card">
+                            <h3><span class="platform-badge badge-instagram">Instagram</span></h3>
+                            <div style="margin: 15px 0;">
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                                    <span>Visualizzazioni:</span>
+                                    <strong>${parseInt(data.ig_visualizzazioni).toLocaleString('it-IT')}</strong>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                                    <span>Copertura:</span>
+                                    <strong>${parseInt(data.ig_copertura).toLocaleString('it-IT')}</strong>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                                    <span>Interazioni:</span>
+                                    <strong>${data.ig_interazioni}</strong>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                                    <span>Post pubblicati:</span>
+                                    <strong>${data.ig_post}</strong>
+                                </div>
+                                <div style="display: flex; justify-content: space-between;">
+                                    <span>Storie pubblicate:</span>
+                                    <strong>${data.ig_storie}</strong>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="comparison-card">
+                            <h3><span class="platform-badge badge-whatsapp">WhatsApp</span></h3>
+                            <div style="margin: 15px 0;">
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                                    <span>Canale:</span>
+                                    <strong>Comune di Vigliano</strong>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                                    <span>Follower:</span>
+                                    <strong>${data.wa_follower}</strong>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                                    <span>Frequenza:</span>
+                                    <strong>~1 a settimana</strong>
+                                </div>
+                                <div style="display: flex; justify-content: space-between;">
+                                    <span>Tipologia:</span>
+                                    <strong>Pubblica utilità</strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="section-header">
+                        <div class="section-icon">📊</div>
+                        <h2 class="section-title">Andamento Follower</h2>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="followersChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="section-header">
+                        <div class="section-icon">👁️</div>
+                        <h2 class="section-title">Visualizzazioni per Piattaforma</h2>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="viewsChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="section-header">
+                        <div class="section-icon">💬</div>
+                        <h2 class="section-title">Engagement (Interazioni)</h2>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="engagementChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="section-header">
+                        <div class="section-icon">📝</div>
+                        <h2 class="section-title">Storico Periodi</h2>
+                    </div>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Periodo</th>
+                                    <th>FB Follower</th>
+                                    <th>IG Follower</th>
+                                    <th>WA Follower</th>
+                                    <th>Visualizzazioni</th>
+                                    <th>Interazioni</th>
+                                    <th>Contenuti</th>
+                                </tr>
+                            </thead>
+                            <tbody id="historyTable">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+
+            content.innerHTML = html;
+            renderCharts();
+            renderHistoryTable();
+        }
+
+        function formatDate(dateStr) {
+            const parts = dateStr.split('-');
+            return `${parts[2]}/${parts[1]}/${parts[0]}`;
+        }
+
+        function calculateGrowth(currentData, field) {
+            const currentIndex = allData.findIndex(d => d.periodo_inizio === currentData.periodo_inizio);
+            if (currentIndex > 0) {
+                const previousData = allData[currentIndex - 1];
+                return parseInt(currentData[field]) - parseInt(previousData[field]);
+            }
+            return 0;
+        }
+
+        function getGrowthClass(growth) {
+            if (growth > 0) return 'stat-growth-positive';
+            if (growth < 0) return 'stat-growth-negative';
+            return '';
+        }
+
+        function getGrowthText(growth) {
+            if (growth > 0) return `+${growth} ⬆️`;
+            if (growth < 0) return `${growth} ⬇️`;
+            return 'Nessuna variazione';
+        }
+
+        function renderCharts() {
+            // Distruggi grafici esistenti
+            Object.values(chartInstances).forEach(chart => chart.destroy());
+            chartInstances = {};
+
+            const periods = allData.map(d => {
+                const start = d.periodo_inizio.split('-');
+                return `${start[2]}/${start[1]}`;
+            });
+
+            // Grafico Follower
+            const followersCtx = document.getElementById('followersChart');
+            if (followersCtx) {
+                chartInstances.followers = new Chart(followersCtx, {
+                    type: 'line',
+                    data: {
+                        labels: periods,
+                        datasets: [
+                            {
+                                label: 'Facebook',
+                                data: allData.map(d => parseInt(d.fb_follower)),
+                                borderColor: '#1877f2',
+                                backgroundColor: 'rgba(24, 119, 242, 0.1)',
+                                tension: 0.4,
+                                fill: true
+                            },
+                            {
+                                label: 'Instagram',
+                                data: allData.map(d => parseInt(d.ig_follower)),
+                                borderColor: '#E1306C',
+                                backgroundColor: 'rgba(225, 48, 108, 0.1)',
+                                tension: 0.4,
+                                fill: true
+                            },
+                            {
+                                label: 'WhatsApp',
+                                data: allData.map(d => parseInt(d.wa_follower)),
+                                borderColor: '#25D366',
+                                backgroundColor: 'rgba(37, 211, 102, 0.1)',
+                                tension: 0.4,
+                                fill: true
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                                labels: {
+                                    font: { family: 'Open Sans', size: 13 },
+                                    padding: 15
+                                }
+                            },
+                            tooltip: {
+                                backgroundColor: 'rgba(58, 58, 58, 0.95)',
+                                titleFont: { family: 'Open Sans', size: 14 },
+                                bodyFont: { family: 'Open Sans', size: 13 },
+                                padding: 12,
+                                cornerRadius: 4
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: false,
+                                ticks: {
+                                    font: { family: 'Open Sans', size: 12 },
+                                    color: '#4B4F58'
+                                },
+                                grid: {
+                                    color: 'rgba(0, 0, 0, 0.05)'
+                                }
+                            },
+                            x: {
+                                ticks: {
+                                    font: { family: 'Open Sans', size: 12 },
+                                    color: '#4B4F58'
+                                },
+                                grid: {
+                                    display: false
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Grafico Visualizzazioni
+            const viewsCtx = document.getElementById('viewsChart');
+            if (viewsCtx) {
+                chartInstances.views = new Chart(viewsCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: periods,
+                        datasets: [
+                            {
+                                label: 'Facebook',
+                                data: allData.map(d => parseInt(d.fb_visualizzazioni)),
+                                backgroundColor: '#1877f2',
+                                borderRadius: 4
+                            },
+                            {
+                                label: 'Instagram',
+                                data: allData.map(d => parseInt(d.ig_visualizzazioni)),
+                                backgroundColor: '#E1306C',
+                                borderRadius: 4
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                                labels: {
+                                    font: { family: 'Open Sans', size: 13 },
+                                    padding: 15
+                                }
+                            },
+                            tooltip: {
+                                backgroundColor: 'rgba(58, 58, 58, 0.95)',
+                                titleFont: { family: 'Open Sans', size: 14 },
+                                bodyFont: { family: 'Open Sans', size: 13 },
+                                padding: 12,
+                                cornerRadius: 4,
+                                callbacks: {
+                                    label: function(context) {
+                                        return context.dataset.label + ': ' + context.parsed.y.toLocaleString('it-IT');
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    font: { family: 'Open Sans', size: 12 },
+                                    color: '#4B4F58',
+                                    callback: function(value) {
+                                        return value.toLocaleString('it-IT');
+                                    }
+                                },
+                                grid: {
+                                    color: 'rgba(0, 0, 0, 0.05)'
+                                }
+                            },
+                            x: {
+                                ticks: {
+                                    font: { family: 'Open Sans', size: 12 },
+                                    color: '#4B4F58'
+                                },
+                                grid: {
+                                    display: false
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Grafico Engagement
+            const engagementCtx = document.getElementById('engagementChart');
+            if (engagementCtx) {
+                chartInstances.engagement = new Chart(engagementCtx, {
+                    type: 'line',
+                    data: {
+                        labels: periods,
+                        datasets: [
+                            {
+                                label: 'Facebook Interazioni',
+                                data: allData.map(d => parseInt(d.fb_interazioni)),
+                                borderColor: '#1877f2',
+                                backgroundColor: 'rgba(24, 119, 242, 0.1)',
+                                tension: 0.4,
+                                fill: true,
+                                pointRadius: 5,
+                                pointHoverRadius: 7
+                            },
+                            {
+                                label: 'Instagram Interazioni',
+                                data: allData.map(d => parseInt(d.ig_interazioni)),
+                                borderColor: '#E1306C',
+                                backgroundColor: 'rgba(225, 48, 108, 0.1)',
+                                tension: 0.4,
+                                fill: true,
+                                pointRadius: 5,
+                                pointHoverRadius: 7
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                                labels: {
+                                    font: { family: 'Open Sans', size: 13 },
+                                    padding: 15
+                                }
+                            },
+                            tooltip: {
+                                backgroundColor: 'rgba(58, 58, 58, 0.95)',
+                                titleFont: { family: 'Open Sans', size: 14 },
+                                bodyFont: { family: 'Open Sans', size: 13 },
+                                padding: 12,
+                                cornerRadius: 4
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    font: { family: 'Open Sans', size: 12 },
+                                    color: '#4B4F58'
+                                },
+                                grid: {
+                                    color: 'rgba(0, 0, 0, 0.05)'
+                                }
+                            },
+                            x: {
+                                ticks: {
+                                    font: { family: 'Open Sans', size: 12 },
+                                    color: '#4B4F58'
+                                },
+                                grid: {
+                                    display: false
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        function renderHistoryTable() {
+            const tbody = document.getElementById('historyTable');
+            if (!tbody) return;
+
+            tbody.innerHTML = allData.map(d => `
+                <tr>
+                    <td><strong>${formatDate(d.periodo_inizio)} - ${formatDate(d.periodo_fine)}</strong></td>
+                    <td>${d.fb_follower}</td>
+                    <td>${d.ig_follower}</td>
+                    <td>${d.wa_follower}</td>
+                    <td>${(parseInt(d.fb_visualizzazioni) + parseInt(d.ig_visualizzazioni)).toLocaleString('it-IT')}</td>
+                    <td>${(parseInt(d.fb_interazioni) + parseInt(d.ig_interazioni))}</td>
+                    <td>${parseInt(d.fb_post) + parseInt(d.fb_storie) + parseInt(d.ig_post) + parseInt(d.ig_storie)}</td>
+                </tr>
+            `).join('');
+        }
+
+        // Carica automaticamente il file CSV predefinito se esiste
+        window.addEventListener('DOMContentLoaded', function() {
+            loadDefaultCSV();
+        });
+
+        async function loadDefaultCSV() {
+            try {
+                const response = await fetch('./social-vigliano-2025.csv');
+                if (response.ok) {
+                    const text = await response.text();
+                    parseCSV(text);
+                    console.log('✅ File social-vigliano-2025.csv caricato automaticamente');
+                } else {
+                    console.log('ℹ️ File social-vigliano-2025.csv non trovato. Usa il bottone per caricare i dati.');
+                }
+            } catch (error) {
+                console.log('ℹ️ File social-vigliano-2025.csv non trovato nella stessa cartella. Usa il bottone per caricare i dati.');
+            }
+        }
+    </script>
+</body>
+</html>
