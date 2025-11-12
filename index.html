@@ -3,12 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Social Media - Comune di Vigliano Biellese | Videeco Design</title>
+    <title>Dashboard Social Media</title>
 
-    <!-- Favicon Videeco -->
-    <link rel="icon" type="image/jpeg" href="https://videeco.com/wp-content/uploads/2021/05/cropped-logo-negativo-192x192.jpg" sizes="192x192">
-    <link rel="shortcut icon" href="https://videeco.com/wp-content/uploads/2021/05/cropped-logo-negativo-192x192.jpg">
-    <link rel="apple-touch-icon" href="https://videeco.com/wp-content/uploads/2021/05/cropped-logo-negativo-192x192.jpg" sizes="192x192">
     <meta name="theme-color" content="#e10d19">
 
     <!-- Fonts -->
@@ -403,7 +399,7 @@
         <div class="header">
             <div class="header-title">
                 <h1>📊 Dashboard Social Media</h1>
-                <p>Comune di Vigliano Biellese</p>
+                <p id="clientName">Carica i dati per iniziare</p>
             </div>
             <div class="file-upload-container">
                 <div class="file-input-wrapper">
@@ -426,8 +422,8 @@
 
                 <div class="csv-example">
                     <strong>Formato CSV richiesto:</strong><br><br>
-                    periodo_inizio,periodo_fine,fb_follower,fb_visualizzazioni,fb_copertura,fb_interazioni,fb_post,fb_storie,ig_follower,ig_visualizzazioni,ig_copertura,ig_interazioni,ig_post,ig_storie,wa_follower<br>
-                    2025-10-14,2025-11-10,121,4929,1684,40,11,12,364,6277,687,36,5,14,64
+                    client_name,periodo_inizio,periodo_fine,fb_page,fb_follower,fb_visualizzazioni,fb_copertura,fb_interazioni,fb_post,fb_storie,ig_account,ig_follower,ig_visualizzazioni,ig_copertura,ig_interazioni,ig_post,ig_storie,wa_channel,wa_follower<br>
+                    Tuo Cliente,2025-10-14,2025-11-10,Pagina FB,121,4929,1684,40,11,12,@instagram,364,6277,687,36,5,14,Canale WA,64
                 </div>
             </div>
         </div>
@@ -443,9 +439,9 @@
 
         // Funzione per caricare dati di esempio
         function loadSampleData() {
-            const sampleCSV = `periodo_inizio,periodo_fine,fb_follower,fb_visualizzazioni,fb_copertura,fb_interazioni,fb_post,fb_storie,ig_follower,ig_visualizzazioni,ig_copertura,ig_interazioni,ig_post,ig_storie,wa_follower
-2025-09-14,2025-10-13,115,4200,1500,35,10,10,350,5800,650,32,4,12,60
-2025-10-14,2025-11-10,121,4929,1684,40,11,12,364,6277,687,36,5,14,64`;
+            const sampleCSV = `client_name,periodo_inizio,periodo_fine,fb_page,fb_follower,fb_visualizzazioni,fb_copertura,fb_interazioni,fb_post,fb_storie,ig_account,ig_follower,ig_visualizzazioni,ig_copertura,ig_interazioni,ig_post,ig_storie,wa_channel,wa_follower
+Cliente Demo,2025-09-14,2025-10-13,Pagina Facebook,115,4200,1500,35,10,10,@instagram_demo,350,5800,650,32,4,12,Canale Demo,60
+Cliente Demo,2025-10-14,2025-11-10,Pagina Facebook,121,4929,1684,40,11,12,@instagram_demo,364,6277,687,36,5,14,Canale Demo,64`;
             parseCSV(sampleCSV);
         }
 
@@ -476,6 +472,10 @@
             }
 
             if (allData.length > 0) {
+                // Aggiorna il nome del cliente nell'header
+                if (allData[0].client_name) {
+                    document.getElementById('clientName').textContent = allData[0].client_name;
+                }
                 renderDashboard(allData[allData.length - 1]); // Mostra l'ultimo periodo
             }
         }
@@ -539,6 +539,7 @@
                     <div class="comparison-cards">
                         <div class="comparison-card">
                             <h3><span class="platform-badge badge-facebook">Facebook</span></h3>
+                            ${data.fb_page ? `<div style="margin-bottom: 15px; color: #999; font-size: 14px;">${data.fb_page}</div>` : ''}
                             <div style="margin: 15px 0;">
                                 <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
                                     <span>Visualizzazioni:</span>
@@ -564,6 +565,7 @@
                         </div>
                         <div class="comparison-card">
                             <h3><span class="platform-badge badge-instagram">Instagram</span></h3>
+                            ${data.ig_account ? `<div style="margin-bottom: 15px; color: #999; font-size: 14px;">${data.ig_account}</div>` : ''}
                             <div style="margin: 15px 0;">
                                 <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
                                     <span>Visualizzazioni:</span>
@@ -592,7 +594,7 @@
                             <div style="margin: 15px 0;">
                                 <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
                                     <span>Canale:</span>
-                                    <strong>Comune di Vigliano</strong>
+                                    <strong>${data.wa_channel || 'N/A'}</strong>
                                 </div>
                                 <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
                                     <span>Follower:</span>
